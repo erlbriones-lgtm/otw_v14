@@ -361,14 +361,14 @@ export const TagbilaranDashboard: React.FC = () => {
             className="w-full relative flex flex-col select-none"
             id="barangay-cinematic-view-container"
           >
-            {/* Cinematic Section (takes min-h-[82vh] with background, title and navigation) */}
-            <div className="w-full min-h-[82vh] relative flex flex-col justify-between items-center px-4 md:px-12 py-12 text-center overflow-hidden" id="barangay-cinematic-hero">
+            {/* Cinematic Section (takes responsive min-h with background, title and navigation) */}
+            <div className="w-full min-h-[40vh] sm:min-h-[55vh] md:min-h-[82vh] relative flex flex-col justify-between items-center px-4 md:px-12 py-8 sm:py-12 text-center overflow-hidden" id="barangay-cinematic-hero">
               {/* Absolute Background image with custom forest-green / dark vignette cover */}
               <div className="absolute inset-0 z-0">
                 <img
                   src={activeImage}
                   alt={activeBarangay.name}
-                  className="w-full h-full object-cover transition-all duration-500 filter blur-xl scale-102 will-change-transform translate-z-0"
+                  className="w-full h-full object-cover transition-all duration-500 filter blur-md scale-102 will-change-transform translate-z-0"
                   referrerPolicy="no-referrer"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#064a1b]/90 via-[#0d6b2c]/60 to-black/55 pointer-events-none" />

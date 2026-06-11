@@ -12,8 +12,19 @@ interface HeroProps {
 export default function Hero({ onSwitchToHeritage, onPlanVisit, weatherDescription, temperature }: HeroProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isAudioMuted, setIsAudioMuted] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  useEffect(() => {
+    if (isMobile) return;
     const video = videoRef.current;
     if (!video) return;
 
@@ -22,7 +33,7 @@ export default function Hero({ onSwitchToHeritage, onPlanVisit, weatherDescripti
     video.play().catch((err) => {
       console.log("[Hero Video] Autoplay initiated or state blocked:", err);
     });
-  }, []);
+  }, [isMobile]);
 
   const handleToggleMute = () => {
     const video = videoRef.current;
@@ -42,7 +53,7 @@ export default function Hero({ onSwitchToHeritage, onPlanVisit, weatherDescripti
   return (
     <section
       id="gateway-hero"
-      className="relative min-h-[82vh] xl:min-h-[84vh] flex items-center justify-center bg-transparent px-6 sm:px-12 md:px-16 lg:px-24 pt-40 pb-20 select-none"
+      className="relative min-h-[50vh] sm:min-h-[65vh] md:min-h-[82vh] xl:min-h-[84vh] flex items-center justify-center bg-transparent px-4 sm:px-12 md:px-16 lg:px-24 pt-32 sm:pt-40 pb-16 sm:pb-20 select-none animate-fade-in"
     >
       {/* 
         PREMIUM FULL-SCREEN BACKDROP
@@ -52,19 +63,26 @@ export default function Hero({ onSwitchToHeritage, onPlanVisit, weatherDescripti
         id="hero-background-media" 
         className="absolute inset-0 z-0 overflow-hidden bg-gradient-to-b from-[#0c180b] via-[#142813] to-[#0d1b0c]"
       >
-        {/* Full-bleed background video */}
+        {/* Full-bleed background video or static high-quality fallback on mobile */}
         <div className="absolute inset-0 select-none transition-opacity duration-1000">
-          <video
-            ref={videoRef}
-            src="/webp/home.mp4"
-            aria-hidden="true"
-            muted={isAudioMuted}
-            autoPlay
-            loop
-            playsInline
-            preload="auto"
-            className="w-full h-full object-cover filter saturate-[1.12] brightness-[0.75] contrast-[1.02]"
-          />
+          {!isMobile ? (
+            <video
+              ref={videoRef}
+              src="/webp/home.mp4"
+              aria-hidden="true"
+              muted={isAudioMuted}
+              autoPlay
+              loop
+              playsInline
+              preload="auto"
+              className="w-full h-full object-cover filter saturate-[1.12] brightness-[0.75] contrast-[1.02]"
+            />
+          ) : (
+            <div 
+              className="w-full h-full bg-cover bg-center filter saturate-[1.12] brightness-[0.55] contrast-[1.02] transition-all duration-300"
+              style={{ backgroundImage: "url('/webp/City%20Lights%20of%20Tagbilaran%20(9).webp')" }}
+            />
+          )}
           {/* Deep environmental tint overlays for maximum readability */}
           <div className="absolute inset-0 bg-gradient-to-b from-[#152614]/30 via-transparent to-[#152614]/45 pointer-events-none z-15" />
         </div>
@@ -117,30 +135,32 @@ export default function Hero({ onSwitchToHeritage, onPlanVisit, weatherDescripti
         </motion.p>
       </div>
 
-      {/* Mute/unmute button floating in the bottom-right corner */}
-      <div className="absolute bottom-10 right-6 z-[40] flex items-center gap-2" id="hero-audio-controls">
-        {isAudioMuted && (
-          <span className="bg-[#05461a]/90 text-white border border-[#32e875]/30 text-[10px] font-mono tracking-wider font-extrabold px-3 py-1.5 rounded-full shadow-lg select-none backdrop-blur-xs animate-pulse uppercase">
-            Tap to play audio
-          </span>
-        )}
-        <button
-          type="button"
-          onClick={handleToggleMute}
-          aria-label={isAudioMuted ? "Unmute background audio" : "Mute background audio"}
-          className={`h-10 w-10 sm:h-11 sm:w-11 rounded-full border border-[#8EE6A8]/85 text-[#F2FFF6] transition-transform duration-200 hover:scale-110 active:scale-95 flex items-center justify-center relative cursor-pointer ${
-            isAudioMuted 
-              ? "bg-gradient-to-br from-[#FF5555] to-[#D32F2F] shadow-[0_0_15px_rgba(255,85,85,0.6)] animate-bounce" 
-              : "bg-gradient-to-br from-[#66D17F] to-[#49B368] hover:shadow-[0_0_10px_rgba(102,209,127,0.4)]"
-          }`}
-          id="hero-mute-button"
-        >
-          {isAudioMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+      {/* Mute/unmute button floating in the bottom-right corner - only loaded if not mobile to save space/logic */}
+      {!isMobile && (
+        <div className="absolute bottom-10 right-6 z-[40] flex items-center gap-2" id="hero-audio-controls">
           {isAudioMuted && (
-            <span className="absolute -inset-1 rounded-full border border-[#FF5555]/40 animate-ping pointer-events-none" />
+            <span className="bg-[#05461a]/90 text-white border border-[#32e875]/30 text-[10px] font-mono tracking-wider font-extrabold px-3 py-1.5 rounded-full shadow-lg select-none backdrop-blur-xs animate-pulse uppercase">
+              Tap to play audio
+            </span>
           )}
-        </button>
-      </div>
+          <button
+            type="button"
+            onClick={handleToggleMute}
+            aria-label={isAudioMuted ? "Unmute background audio" : "Mute background audio"}
+            className={`h-10 w-10 sm:h-11 sm:w-11 rounded-full border border-[#8EE6A8]/85 text-[#F2FFF6] transition-transform duration-200 hover:scale-110 active:scale-95 flex items-center justify-center relative cursor-pointer ${
+              isAudioMuted 
+                ? "bg-gradient-to-br from-[#FF5555] to-[#D32F2F] shadow-[0_0_15px_rgba(255,85,85,0.6)] animate-bounce" 
+                : "bg-gradient-to-br from-[#66D17F] to-[#49B368] hover:shadow-[0_0_10px_rgba(102,209,127,0.4)]"
+            }`}
+            id="hero-mute-button"
+          >
+            {isAudioMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+            {isAudioMuted && (
+              <span className="absolute -inset-1 rounded-full border border-[#FF5555]/40 animate-ping pointer-events-none" />
+            )}
+          </button>
+        </div>
+      )}
     </section>
   );
 }

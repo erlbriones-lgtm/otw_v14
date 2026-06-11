@@ -10,7 +10,7 @@ export default function Saulog() {
       {/* HERO SECTION WITH DYNAMIC VIDEO */}
       <section
         id="saulog-hero"
-        className="relative min-h-[82vh] xl:min-h-[84vh] flex items-center justify-center bg-[#0d210c] px-6 sm:px-12 md:px-16 lg:px-24 pt-40 pb-24 overflow-hidden"
+        className="relative min-h-[25vh] sm:min-h-[45vh] md:min-h-[82vh] xl:min-h-[84vh] flex items-center justify-center bg-[#0d210c] px-6 sm:px-12 md:px-16 lg:px-24 pt-24 sm:pt-40 pb-12 sm:pb-24 overflow-hidden animate-fade-in"
       >
         {/* Background media wrapper */}
         <div id="saulog-bg-media" className="absolute inset-0 z-0 overflow-hidden flex items-center justify-center bg-[#0d210c]">

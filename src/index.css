@@ -146,3 +146,14 @@
 .hover-pause:hover .animate-marquee-down {
   animation-play-state: paused;
 }
+
+/* Elite GPU Hardware Acceleration to prevent scrolling lag */
+.animate-marquee-left,
+.animate-marquee-right,
+.animate-marquee-up,
+.animate-marquee-down {
+  will-change: transform;
+  backface-visibility: hidden;
+  perspective: 1000px;
+  transform: translate3d(0, 0, 0);
+}
